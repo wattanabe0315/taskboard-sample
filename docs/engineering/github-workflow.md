@@ -64,18 +64,18 @@ git switch -c <branch-name>
 <type>(<scope>): <description>
 ```
 
-description は英語の命令形または簡潔な動詞句にしてください。
-先頭は小文字にし、末尾のピリオドは付けません。
+description は、極力日本語で簡潔に記載してください。
+末尾の句点は付けなくて構いません。
 
 例:
 
 ```text
-docs: add github workflow guide
-docs: add todo feature spec
-chore: add verify script
-chore: install vitest
-feat(todo): add todo form
-fix(todo): prevent empty todo submission
+docs: GitHub運用ルールを追加
+docs: TODOアプリ機能仕様を追加
+chore: 検証スクリプトを追加
+chore: Vitestを導入
+feat(todo): TODO追加フォームを追加
+fix(todo): 空のTODOを追加できないように修正
 ```
 
 よく使う type:
