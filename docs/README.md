@@ -8,6 +8,7 @@
 | --- | --- |
 | [product/todo-app.md](product/todo-app.md) | TODOアプリのMVP機能仕様 |
 | [engineering/coding-style.md](engineering/coding-style.md) | コーディング規約、命名、配置、レビュー観点 |
+| [engineering/github-workflow.md](engineering/github-workflow.md) | ブランチ、コミット、Pull Request、マージ後作業の運用ルール |
 | [../ARCHITECTURE.md](../ARCHITECTURE.md) | 現在の構成、主要ファイルの責務、今後のレイヤー分離方針 |
 | [../AGENTS.md](../AGENTS.md) | このリポジトリで作業するエージェント向けの作業ガイド |
 
