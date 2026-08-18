@@ -26,12 +26,14 @@ TaskBoard は、Next.js + TypeScript で構築する TODO 管理アプリケー�
 │   ├── layout.tsx
 │   └── page.tsx
 ├── public/
+├── scripts/
+│   └── verify.sh
 ├── AGENTS.md
-├── ARCHITECTURE.md
+├── docs/
+│   └── ARCHITECTURE.md
 ├── next.config.ts
 ├── package.json
-├── tsconfig.json
-└── verify.sh
+└── tsconfig.json
 ```
 
 ## 主要ファイルの責務
@@ -52,7 +54,7 @@ TODO管理の画面を実装する場合も、状態管理やビジネスルー�
 Tailwind CSS の読み込みと、アプリケーション全体のCSS変数・基本スタイルを定義します。
 コンポーネント固有の複雑な見た目を無制限に集約しないでください。
 
-### `verify.sh`
+### `scripts/verify.sh`
 
 `npm run verify` から呼び出される検証ハーネスです。
 現在は ESLint、TypeScript 型チェック、Vitest を順に実行します。
@@ -118,7 +120,7 @@ TODOデータの保存先を追加する場合は、UIから直接ストレー�
 npm run verify
 ```
 
-`npm run verify` は `verify.sh` を通じて次を実行します。
+`npm run verify` は `scripts/verify.sh` を通じて次を実行します。
 
 ```bash
 npm run lint

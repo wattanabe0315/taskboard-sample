@@ -30,7 +30,7 @@ npm run test
 
 ## Documentation
 
-- [ARCHITECTURE.md](./ARCHITECTURE.md): アーキテクチャ概要
+- [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md): アーキテクチャ概要
 - [AGENTS.md](./AGENTS.md): 作業エージェント向けガイド
 - [docs/README.md](./docs/README.md): ドキュメント一覧
 

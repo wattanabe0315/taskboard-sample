@@ -1,6 +1,6 @@
 ---
 name: taskboard-feature
-description: TaskBoardリポジトリでTODOアプリのユーザー向け機能を追加・変更するときに使うSkill。仕様確認、既存コード調査、実装、テスト追加、npm run verify、コミット、Pull Request作成までを、AGENTS.md、ARCHITECTURE.md、docs/product/todo-app.md、docs/engineering/coding-style.md、docs/engineering/github-workflow.mdに沿って進める。
+description: TaskBoardリポジトリでTODOアプリのユーザー向け機能を追加・変更するときに使うSkill。仕様確認、既存コード調査、実装、テスト追加、npm run verify、コミット、Pull Request作成までを、AGENTS.md、docs/ARCHITECTURE.md、docs/product/todo-app.md、docs/engineering/coding-style.md、docs/engineering/github-workflow.mdに沿って進める。
 ---
 
 # TaskBoard Feature
@@ -28,7 +28,7 @@ git switch -c feat/<feature-name>
 コード変更前に、少なくとも次を確認する。
 
 - `AGENTS.md`: 作業ルール、検証ハーネス、PR作成時の記載事項
-- `ARCHITECTURE.md`: 現在の構成、主要ファイルの責務、レイヤー分離方針
+- `docs/ARCHITECTURE.md`: 現在の構成、主要ファイルの責務、レイヤー分離方針
 - `docs/README.md`: 参照すべきドキュメントの一覧
 - `docs/product/todo-app.md`: TODOアプリのMVP機能仕様とテスト観点
 - `docs/engineering/coding-style.md`: TypeScript、React、配置、命名、テスト方針
@@ -95,7 +95,7 @@ TODO MVPの代表的な仕様:
 npm run verify
 ```
 
-`npm run verify` は `verify.sh` 経由で lint、typecheck、test をまとめて実行する。失敗した場合は、原因を確認して修正する。実行できない場合は、理由と残るリスクをPR本文と完了報告に明記する。
+`npm run verify` は `scripts/verify.sh` 経由で lint、typecheck、test をまとめて実行する。失敗した場合は、原因を確認して修正する。実行できない場合は、理由と残るリスクをPR本文と完了報告に明記する。
 
 必要に応じて個別実行する。
 
