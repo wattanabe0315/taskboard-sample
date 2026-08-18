@@ -25,6 +25,11 @@ TaskBoard は、Next.js + TypeScript で構築する TODO 管理アプリケー�
 │   ├── globals.css
 │   ├── layout.tsx
 │   └── page.tsx
+├── components/
+│   └── TodoBoard.tsx
+├── domain/
+│   ├── todo.test.ts
+│   └── todo.ts
 ├── public/
 ├── scripts/
 │   └── verify.sh
@@ -46,8 +51,8 @@ TaskBoard は、Next.js + TypeScript で構築する TODO 管理アプリケー�
 ### `app/page.tsx`
 
 ルートページのUIを担当します。
-現時点では初期テンプレートに近い内容です。
-TODO管理の画面を実装する場合も、状態管理やビジネスルールが大きくなったらコンポーネントやドメイン層へ分離してください。
+現時点では `components/TodoBoard.tsx` を表示します。
+ページ固有のルーティング境界として扱い、TODOの状態管理やビジネスルールは直接置かないでください。
 
 ### `app/globals.css`
 
@@ -59,17 +64,32 @@ Tailwind CSS の読み込みと、アプリケーション全体のCSS変数・�
 `npm run verify` から呼び出される検証ハーネスです。
 現在は ESLint、TypeScript 型チェック、Vitest を順に実行します。
 
+### `components/TodoBoard.tsx`
+
+TODOの追加、優先度選択、一覧表示、完了切り替え、削除のUIを担当します。
+ユーザー操作と画面表示を中心にし、TODO作成時のバリデーションやデフォルト優先度は `domain/todo.ts` に委譲します。
+
+### `domain/todo.ts`
+
+TODOの型、優先度、作成時のバリデーション、デフォルト優先度を担当します。
+React に依存しない形にし、Vitest で単体テストできる状態を保ってください。
+
+### `domain/todo.test.ts`
+
+TODO作成と優先度に関する単体テストを担当します。
+ユーザーから見える振る舞いにつながるビジネスルールを確認します。
+
 ## 実装レイヤー方針
 
-現時点では `src/`、`components/`、`domain/`、`tests/` は存在しません。
-機能追加により責務が増えた場合は、次の方針で分離してください。
+現時点では `components/` と `domain/` を使用しています。
+機能追加により責務が増えた場合も、次の方針で分離してください。
 
 ### UIレイヤー
 
 画面表示とユーザー操作を担当します。
 React コンポーネントは、表示・入力・イベント通知を中心にし、TODOの状態遷移ルールなどのビジネスロジックを直接抱え込まないでください。
 
-想定配置:
+配置:
 
 ```text
 app/
@@ -81,7 +101,7 @@ components/
 TODO、タスク、ステータス、並び順など、アプリケーション固有のルールを担当します。
 React やブラウザAPIに依存しない形を優先し、Vitest で単体テストしやすくしてください。
 
-想定配置:
+配置:
 
 ```text
 domain/
@@ -128,8 +148,9 @@ npm run typecheck
 npm run test -- --passWithNoTests
 ```
 
-現時点ではテストファイルが存在しないため、Vitest には `--passWithNoTests` を付けています。
-テストが追加され、空テスト状態を許容する必要がなくなった場合は、このオプションを外すことを検討してください。
+現時点では `domain/todo.test.ts` が存在します。
+Vitest には互換性維持のため `--passWithNoTests` を付けています。
+テストが継続的に追加され、空テスト状態を許容する必要がなくなった場合は、このオプションを外すことを検討してください。
 
 ## 依存関係の方針
 
