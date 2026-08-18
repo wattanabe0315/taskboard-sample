@@ -18,7 +18,7 @@ TaskBoard は、Next.js + TypeScript で構築された TODO 管理アプリケ�
 
 コードを変更する前に、作業内容に関係するドキュメントを確認してください。
 
-- システム構成: `ARCHITECTURE.md` が存在する場合は確認する
+- システム構成: `docs/ARCHITECTURE.md` が存在する場合は確認する
 - プロダクト仕様: `docs/product/` が存在する場合は確認する
 - コーディング規約: `docs/engineering/coding-style.md` が存在する場合は確認する
 - テスト方針: `docs/engineering/testing.md` が存在する場合は確認する
@@ -39,7 +39,7 @@ TaskBoard は、Next.js + TypeScript で構築された TODO 管理アプリケ�
 
 - `app/`: Next.js のルーティングとページ
 - `public/`: 静的アセット
-- `verify.sh`: `npm run verify` から呼び出される検証ハーネス
+- `scripts/verify.sh`: `npm run verify` から呼び出される検証ハーネス
 - `docs/`: プロジェクトの仕様と設計資料。存在する場合は参照する
 - `tests/`: テスト。存在しない場合は、必要に応じて作成する
 
@@ -47,9 +47,9 @@ TaskBoard は、Next.js + TypeScript で構築された TODO 管理アプリケ�
 
 - 一括検証は `npm run verify` を使う
 - 互換用の `npm run check` は `npm run verify` を呼び出す
-- `verify.sh` には、`lint`、`typecheck`、`test` 相当の検証を含める
-- `verify.sh` に検証処理を追加する場合は、各処理の目的を日本語コメントで記載する
-- `verify.sh` では、各コマンドの実行前に何を実行するかログへ表示する
+- `scripts/verify.sh` には、`lint`、`typecheck`、`test` 相当の検証を含める
+- `scripts/verify.sh` に検証処理を追加する場合は、各処理の目的を日本語コメントで記載する
+- `scripts/verify.sh` では、各コマンドの実行前に何を実行するかログへ表示する
 - 現在はテストファイルが存在しない状態でも一括検証を成功させるため、Vitest 実行時に `--passWithNoTests` を使う
 - テストファイルを追加した後に `--passWithNoTests` を外す場合は、ローカル検証やCIへの影響を確認する
 

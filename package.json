@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify": "./verify.sh",
+    "verify": "./scripts/verify.sh",
     "check": "npm run verify"
   },
   "dependencies": {
