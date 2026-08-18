@@ -6,6 +6,7 @@
 
 | ドキュメント | 内容 |
 | --- | --- |
+| [product/todo-app.md](product/todo-app.md) | TODOアプリのMVP機能仕様 |
 | [../ARCHITECTURE.md](../ARCHITECTURE.md) | 現在の構成、主要ファイルの責務、今後のレイヤー分離方針 |
 | [../AGENTS.md](../AGENTS.md) | このリポジトリで作業するエージェント向けの作業ガイド |
 
@@ -16,7 +17,6 @@
 
 | 予定パス | 想定内容 |
 | --- | --- |
-| `docs/product/` | プロダクト仕様、ユーザーストーリー、画面仕様 |
 | `docs/engineering/coding-style.md` | コーディング規約、命名、配置、レビュー観点 |
 | `docs/engineering/testing.md` | テスト方針、Vitest の使い方、fixture 方針 |
 
