@@ -19,6 +19,8 @@ PRレビューの基本の流れ:
 4. テスト確認
 5. PRへレビューコメント
 
+GitHub操作は `docs/engineering/github-workflow.md` のコマンド利用方針に従う。
+
 ## 作業開始
 
 1. `git status --short --branch` で現在のブランチと未コミット変更を確認する。

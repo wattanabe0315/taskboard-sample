@@ -22,6 +22,8 @@ TaskBoard の機能追加では、既存ドキュメントと既存コードを�
 7. push
 8. PR作成
 
+GitHub操作は `docs/engineering/github-workflow.md` のコマンド利用方針に従う。
+
 ## 作業開始
 
 1. `git status --short --branch` で現在のブランチと未コミット変更を確認する。
