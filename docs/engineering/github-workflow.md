@@ -15,6 +15,26 @@
 - PRには動作確認、期待する結果、実行結果を記載する
 - マージ後はローカルの `main` を最新化する
 
+## コマンド利用方針
+
+- ローカル作業ツリーの確認、差分確認、ブランチ切り替え、コミットは `git` を使う
+- GitHub上のIssue、Pull Request、レビュー、チェック結果の確認や作成は `gh` を使う
+- `gh` はホスト側の認証情報に依存するため、sandbox内ではなく、必要なホストアクセス権限を要求して実行する
+
+代表例:
+
+```bash
+gh auth status
+gh api user --jq '.login'
+gh issue view <issue-number>
+gh pr create
+gh pr view <pr-number> --json title,body,headRefName,baseRefName,reviewDecision,statusCheckRollup
+gh pr diff <pr-number>
+gh pr checks <pr-number>
+gh pr review <pr-number>
+gh pr comment <pr-number>
+```
+
 ## ブランチ運用
 
 ### ブランチ作成
@@ -235,6 +255,8 @@ PR本文は、次の形式を基本にしてください。
 - 
 ```
 
+PR作成は、原則として `gh pr create` を使ってください。
+
 ### ドキュメントのみの変更
 
 ドキュメントのみの変更では、`npm run verify` を省略しても構いません。
@@ -266,6 +288,8 @@ npm run verify
 - ユーザーから見える振る舞いの変更に対してテストがあるか
 - PR本文の期待する結果と実行結果が対応しているか
 - 未実行の検証がある場合、理由が妥当か
+
+PR差分、PR本文、チェック結果、レビューコメントの確認は、原則として `gh pr view`、`gh pr diff`、`gh pr checks`、`gh pr review`、`gh pr comment` を使ってください。
 
 ## マージ後の作業
 

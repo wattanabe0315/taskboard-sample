@@ -7,21 +7,30 @@ description: TaskBoardリポジトリでTODOアプリの不具合を調査・修
 
 TaskBoard のバグ修正では、まず再現条件と期待する結果を明確にし、原因となる最小範囲を特定してから修正する。ユーザーから見える不具合を直す場合は、同じ問題が再発しないことを確認できる回帰テストを追加または更新し、原則として `npm run verify` を実行する。
 
+## このSkillの役割
+
+このSkillは、不具合調査と修正の実装からPR作成までを担当する。PR作成後のレビューは `taskboard-review`、レビュー指摘への対応は `taskboard-review-fix` の対象にする。
+
+基本の流れ:
+
+1. 事象整理
+2. 仕様確認
+3. 原因特定
+4. 修正
+5. 回帰テスト
+6. `npm run verify`
+7. コミット
+8. push
+9. PR作成
+
+GitHub操作は `docs/engineering/github-workflow.md` のコマンド利用方針に従う。
+
 ## 作業開始
 
 1. `git status --short --branch` で現在のブランチと未コミット変更を確認する。
-2. 既存ブランチが作業内容に合わない場合は、`main` を最新化してから `fix/<内容>` のブランチを作る。
+2. 既存ブランチが作業内容に合わない場合は、`docs/engineering/github-workflow.md` に従って `fix/<内容>` のブランチを作る。
 3. ユーザーの未コミット変更がある場合は、勝手に戻さず、今回のバグ修正に必要な差分だけを扱う。
 4. バグ修正は原則として Issue 作成を検討する。小さく明確で1PRに収まる場合だけ省略してよい。
-
-ブランチ作成の基本形:
-
-```bash
-git switch main
-git fetch origin
-git merge --ff-only origin/main
-git switch -c fix/<bug-name>
-```
 
 Issueに対応する場合は、可能であれば Issue 番号を含める。
 
@@ -159,13 +168,7 @@ npm run test
 
 ## 差分確認
 
-PR前に次を確認する。
-
-```bash
-git status --short --branch
-git diff --stat
-git diff
-```
+PR前の差分確認は `docs/engineering/github-workflow.md` に従う。
 
 確認観点:
 
@@ -177,48 +180,11 @@ git diff
 
 ## コミット
 
-コミットメッセージは Conventional Commits を参考にし、description は極力日本語で書く。
-
-```text
-fix(todo): 空のTODOを追加できないように修正
-fix(todo): 完了切り替え後の表示を更新
-test(todo): TODO削除の回帰テストを追加
-docs: バリデーション仕様を更新
-```
-
-ユーザーの未コミット変更を勝手に含めない。コミット前に `git diff --staged` でステージ済み差分を確認する。
+コミットは `docs/engineering/github-workflow.md` に従う。ユーザーの未コミット変更を勝手に含めない。
 
 ## Pull Request
 
-PR本文は日本語で記載し、次の項目を含める。
-
-```md
-## 実装内容
--
-
-## 関連Issue
-- Fixes #<番号>
-
-## 変更した主要ファイル
--
-
-## 追加または更新したテスト
--
-
-## 動作確認
--
-
-## 期待する結果
--
-
-## 実行結果
--
-
-## 残っている問題
--
-```
-
-バグ修正PRでは、可能な限り再現手順、修正前の結果、修正後の結果が対応するように書く。Issueを自動で閉じない場合は `Related to #<番号>` を使う。関連Issueがない場合は、作成しなかった理由を簡潔に書く。
+PR作成と本文は `docs/engineering/github-workflow.md` に従う。バグ修正では、可能な限り再現手順、修正前の結果、修正後の結果が対応するように書く。PR作成後にレビューが必要な場合は、`taskboard-review` の対象として扱う。
 
 ## 完了報告
 

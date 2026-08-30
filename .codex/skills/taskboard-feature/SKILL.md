@@ -7,21 +7,29 @@ description: TaskBoardリポジトリでTODOアプリのユーザー向け機能
 
 TaskBoard の機能追加では、既存ドキュメントと既存コードを確認してから、要求された振る舞いだけを小さく実装する。ユーザーから見える振る舞いを変えた場合は、テストを追加または更新し、原則として `npm run verify` を実行する。
 
+## このSkillの役割
+
+このSkillは、機能追加の実装からPR作成までを担当する。PR作成後のレビューは `taskboard-review`、レビュー指摘への対応は `taskboard-review-fix` の対象にする。
+
+基本の流れ:
+
+1. 仕様確認
+2. 既存コード調査
+3. 実装
+4. テスト
+5. `npm run verify`
+6. コミット
+7. push
+8. PR作成
+
+GitHub操作は `docs/engineering/github-workflow.md` のコマンド利用方針に従う。
+
 ## 作業開始
 
 1. `git status --short --branch` で現在のブランチと未コミット変更を確認する。
-2. 既存ブランチが作業内容に合わない場合は、`main` を最新化してから `feat/<内容>` のブランチを作る。
+2. 既存ブランチが作業内容に合わない場合は、`docs/engineering/github-workflow.md` に従って `feat/<内容>` のブランチを作る。
 3. ユーザーの未コミット変更がある場合は、勝手に戻さず、今回の作業に必要な差分だけを扱う。
 4. 機能追加が大きい、仕様検討が必要、または複数PRに分かれそうな場合は、着手前に Issue 作成を検討する。
-
-ブランチ作成の基本形:
-
-```bash
-git switch main
-git fetch origin
-git merge --ff-only origin/main
-git switch -c feat/<feature-name>
-```
 
 ## 仕様確認
 
@@ -107,13 +115,7 @@ npm run test
 
 ## 差分確認
 
-PR前に次を確認する。
-
-```bash
-git status --short --branch
-git diff --stat
-git diff
-```
+PR前の差分確認は `docs/engineering/github-workflow.md` に従う。
 
 確認観点:
 
@@ -124,48 +126,11 @@ git diff
 
 ## コミット
 
-コミットメッセージは Conventional Commits を参考にし、description は極力日本語で書く。
-
-```text
-feat(todo): TODO追加フォームを追加
-fix(todo): 空のTODOを追加できないように修正
-test(todo): TODO追加のテストを追加
-docs: TODOアプリ仕様を更新
-```
-
-ユーザーの未コミット変更を勝手に含めない。コミット前に `git diff --staged` でステージ済み差分を確認する。
+コミットは `docs/engineering/github-workflow.md` に従う。ユーザーの未コミット変更を勝手に含めない。
 
 ## Pull Request
 
-PR本文は日本語で記載し、次の項目を含める。
-
-```md
-## 実装内容
--
-
-## 関連Issue
-- Closes #<番号>
-
-## 変更した主要ファイル
--
-
-## 追加または更新したテスト
--
-
-## 動作確認
--
-
-## 期待する結果
--
-
-## 実行結果
--
-
-## 残っている問題
--
-```
-
-Issueを自動で閉じない場合は `Related to #<番号>` を使う。関連Issueがない場合は、作成しなかった理由を簡潔に書く。
+PR作成と本文は `docs/engineering/github-workflow.md` に従う。機能追加では、追加したユーザー向け振る舞い、仕様更新、テスト、検証結果が対応するように書く。PR作成後にレビューが必要な場合は、`taskboard-review` の対象として扱う。
 
 ## 完了報告
 
