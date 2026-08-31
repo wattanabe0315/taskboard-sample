@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum TodoPriority {
+  low
+  medium
+  high
+}
+
+model Todo {
+  id        String       @id @db.VarChar(191)
+  title     String       @db.VarChar(100)
+  completed Boolean      @default(false)
+  priority  TodoPriority @default(medium)
+  createdAt DateTime     @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt DateTime     @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
+
+  @@map("todos")
+}
