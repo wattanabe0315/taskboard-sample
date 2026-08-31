@@ -1,15 +1,18 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useActionState } from "react";
+
+import {
+  addTodoAction,
+  deleteTodoAction,
+  toggleTodoAction,
+  type AddTodoActionState,
+} from "@/app/actions";
 import {
   DEFAULT_TODO_PRIORITY,
   TODO_PRIORITIES,
   Todo,
   TodoPriority,
-  createTodo,
-  deleteTodo,
-  parseTodoPriority,
-  toggleTodoCompleted,
 } from "@/domain/todo";
 
 const priorityLabels: Record<TodoPriority, string> = {
@@ -24,40 +27,21 @@ const priorityStyles: Record<TodoPriority, string> = {
   high: "border-rose-200 bg-rose-50 text-rose-800",
 };
 
-export function TodoBoard() {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [title, setTitle] = useState("");
-  const [priority, setPriority] = useState<TodoPriority>(DEFAULT_TODO_PRIORITY);
-  const [error, setError] = useState<string | null>(null);
+const initialAddTodoActionState: AddTodoActionState = {
+  error: null,
+  success: false,
+  submittedAt: null,
+};
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+type TodoBoardProps = {
+  todos: Todo[];
+};
 
-    const result = createTodo({
-      id: crypto.randomUUID(),
-      title,
-      priority,
-      createdAt: new Date().toISOString(),
-    });
-
-    if (!result.success) {
-      setError(result.error);
-      return;
-    }
-
-    setTodos((currentTodos) => [...currentTodos, result.todo]);
-    setTitle("");
-    setPriority(DEFAULT_TODO_PRIORITY);
-    setError(null);
-  }
-
-  function handleToggleTodo(id: string) {
-    setTodos((currentTodos) => toggleTodoCompleted(currentTodos, id));
-  }
-
-  function handleDeleteTodo(id: string) {
-    setTodos((currentTodos) => deleteTodo(currentTodos, id));
-  }
+export function TodoBoard({ todos }: TodoBoardProps) {
+  const [addTodoState, addTodoFormAction, isAddingTodo] = useActionState(
+    addTodoAction,
+    initialAddTodoActionState,
+  );
 
   return (
     <main className="min-h-screen bg-zinc-100 px-4 py-10 text-zinc-950 sm:px-6">
@@ -74,7 +58,7 @@ export function TodoBoard() {
 
         <form
           className="flex flex-col gap-4 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm"
-          onSubmit={handleSubmit}
+          action={addTodoFormAction}
         >
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium text-zinc-700" htmlFor="todo-title">
@@ -84,10 +68,9 @@ export function TodoBoard() {
               className="min-h-11 rounded-md border border-zinc-300 px-3 text-base outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
               id="todo-title"
               maxLength={100}
-              onChange={(event) => setTitle(event.target.value)}
+              name="title"
               placeholder="例: 仕様を確認する"
               type="text"
-              value={title}
             />
           </div>
 
@@ -97,11 +80,9 @@ export function TodoBoard() {
             </label>
             <select
               className="min-h-11 rounded-md border border-zinc-300 bg-white px-3 text-base outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+              defaultValue={DEFAULT_TODO_PRIORITY}
               id="todo-priority"
-              onChange={(event) =>
-                setPriority(parseTodoPriority(event.target.value))
-              }
-              value={priority}
+              name="priority"
             >
               {TODO_PRIORITIES.map((todoPriority) => (
                 <option key={todoPriority} value={todoPriority}>
@@ -111,14 +92,15 @@ export function TodoBoard() {
             </select>
           </div>
 
-          {error ? (
+          {addTodoState.error ? (
             <p className="rounded-md bg-rose-50 px-3 py-2 text-sm text-rose-700">
-              {error}
+              {addTodoState.error}
             </p>
           ) : null}
 
           <button
             className="min-h-11 rounded-md bg-sky-700 px-4 text-base font-medium text-white transition hover:bg-sky-800"
+            disabled={isAddingTodo}
             type="submit"
           >
             追加
@@ -140,13 +122,16 @@ export function TodoBoard() {
                   key={todo.id}
                 >
                   <div className="flex min-w-0 flex-1 items-start gap-3">
-                    <input
-                      aria-label={`${todo.title}の完了状態を切り替える`}
-                      checked={todo.completed}
-                      className="mt-1 h-5 w-5 accent-sky-700"
-                      onChange={() => handleToggleTodo(todo.id)}
-                      type="checkbox"
-                    />
+                    <form action={toggleTodoAction}>
+                      <input name="id" type="hidden" value={todo.id} />
+                      <button
+                        aria-label={`${todo.title}の完了状態を切り替える`}
+                        className="mt-1 flex h-5 w-5 items-center justify-center rounded-sm border border-zinc-400 text-sm leading-none text-sky-700 transition hover:border-sky-700"
+                        type="submit"
+                      >
+                        {todo.completed ? "✓" : ""}
+                      </button>
+                    </form>
                     <div className="flex min-w-0 flex-col gap-2">
                       <span
                         className={
@@ -165,13 +150,15 @@ export function TodoBoard() {
                     </div>
                   </div>
 
-                  <button
-                    className="min-h-10 rounded-md border border-zinc-300 px-3 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
-                    onClick={() => handleDeleteTodo(todo.id)}
-                    type="button"
-                  >
-                    削除
-                  </button>
+                  <form action={deleteTodoAction}>
+                    <input name="id" type="hidden" value={todo.id} />
+                    <button
+                      className="min-h-10 rounded-md border border-zinc-300 px-3 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
+                      type="submit"
+                    >
+                      削除
+                    </button>
+                  </form>
                 </li>
               ))}
             </ul>
