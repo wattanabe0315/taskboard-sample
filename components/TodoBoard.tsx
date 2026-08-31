@@ -7,7 +7,9 @@ import {
   Todo,
   TodoPriority,
   createTodo,
+  deleteTodo,
   parseTodoPriority,
+  toggleTodoCompleted,
 } from "@/domain/todo";
 
 const priorityLabels: Record<TodoPriority, string> = {
@@ -50,17 +52,11 @@ export function TodoBoard() {
   }
 
   function handleToggleTodo(id: string) {
-    setTodos((currentTodos) =>
-      currentTodos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
-      ),
-    );
+    setTodos((currentTodos) => toggleTodoCompleted(currentTodos, id));
   }
 
   function handleDeleteTodo(id: string) {
-    setTodos((currentTodos) =>
-      currentTodos.filter((todo) => todo.id !== id),
-    );
+    setTodos((currentTodos) => deleteTodo(currentTodos, id));
   }
 
   return (
