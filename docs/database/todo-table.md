@@ -64,7 +64,7 @@ model Todo {
   completed Boolean      @default(false)
   priority  TodoPriority @default(medium)
   createdAt DateTime     @default(now()) @map("created_at") @db.DateTime(3)
-  updatedAt DateTime     @updatedAt @map("updated_at") @db.DateTime(3)
+  updatedAt DateTime     @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
 
   @@map("todos")
 }
