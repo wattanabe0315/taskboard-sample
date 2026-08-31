@@ -22,6 +22,7 @@ TaskBoard は、Next.js + TypeScript で構築する TODO 管理アプリケー�
 ```text
 .
 ├── app/
+│   ├── actions.ts
 │   ├── globals.css
 │   ├── layout.tsx
 │   └── page.tsx
@@ -30,10 +31,19 @@ TaskBoard は、Next.js + TypeScript で構築する TODO 管理アプリケー�
 ├── domain/
 │   ├── todo.test.ts
 │   └── todo.ts
+├── lib/
+│   └── prisma.ts
+├── prisma/
+│   ├── migrations/
+│   └── schema.prisma
 ├── public/
+├── repositories/
+│   ├── todoRepository.test.ts
+│   └── todoRepository.ts
 ├── scripts/
 │   └── verify.sh
 ├── AGENTS.md
+├── compose.yaml
 ├── docs/
 │   └── ARCHITECTURE.md
 ├── next.config.ts
@@ -51,8 +61,13 @@ TaskBoard は、Next.js + TypeScript で構築する TODO 管理アプリケー�
 ### `app/page.tsx`
 
 ルートページのUIを担当します。
-現時点では `components/TodoBoard.tsx` を表示します。
-ページ固有のルーティング境界として扱い、TODOの状態管理やビジネスルールは直接置かないでください。
+TODO一覧を `repositories/todoRepository.ts` から取得し、`components/TodoBoard.tsx` へ渡します。
+ページ固有のルーティング境界として扱い、TODOのバリデーションやDB更新処理は直接置かないでください。
+
+### `app/actions.ts`
+
+TODOの追加、完了切り替え、削除を行う Server Actions を定義します。
+入力値の検証は `domain/todo.ts`、DBアクセスは `repositories/todoRepository.ts` に委譲します。
 
 ### `app/globals.css`
 
@@ -67,7 +82,7 @@ Tailwind CSS の読み込みと、アプリケーション全体のCSS変数・�
 ### `components/TodoBoard.tsx`
 
 TODOの追加、優先度選択、一覧表示、完了切り替え、削除のUIを担当します。
-ユーザー操作と画面表示を中心にし、TODO作成時のバリデーションやデフォルト優先度は `domain/todo.ts` に委譲します。
+ユーザー操作と画面表示を中心にし、TODO作成時のバリデーションやDB更新は Server Actions に委譲します。
 
 ### `domain/todo.ts`
 
@@ -78,6 +93,30 @@ React に依存しない形にし、Vitest で単体テストできる状態を�
 
 TODO作成と優先度に関する単体テストを担当します。
 ユーザーから見える振る舞いにつながるビジネスルールを確認します。
+
+### `lib/prisma.ts`
+
+アプリケーション内で共有する `PrismaClient` を初期化します。
+開発時のホットリロードで接続が増えすぎないよう、非本番環境では `globalThis` にインスタンスを保持します。
+
+### `repositories/todoRepository.ts`
+
+TODOの取得、作成、完了切り替え、削除を Prisma 経由で行うデータアクセス層です。
+DBレコードの `Date` とアプリケーション側の ISO 文字列の変換もここで扱います。
+
+### `repositories/todoRepository.test.ts`
+
+Prisma delegate をモックし、DBなしで TODO repository の呼び出し内容と変換処理を確認します。
+
+### `prisma/schema.prisma`
+
+TODO永続化用の Prisma schema を定義します。
+MySQL の `todos` テーブルは `docs/database/todo-table.md` の設計を基準にします。
+
+### `compose.yaml`
+
+ローカル開発用の MySQL コンテナを定義します。
+実際の起動手順は `docs/database/mysql-prisma-local.md` を参照してください。
 
 ## 実装レイヤー方針
 
@@ -107,6 +146,19 @@ React やブラウザAPIに依存しない形を優先し、Vitest で単体テ�
 domain/
 ```
 
+### データアクセスレイヤー
+
+DBアクセスと永続化データの変換を担当します。
+UIや Server Actions から Prisma を直接呼ばず、repository を経由してください。
+
+配置:
+
+```text
+lib/
+repositories/
+prisma/
+```
+
 ### テスト
 
 ユーザーから見える振る舞いやドメインロジックを変更した場合は、テストを追加または更新してください。
@@ -121,16 +173,11 @@ tests/
 
 ## データ管理方針
 
-現時点では永続化層はありません。
-TODOデータの保存先を追加する場合は、UIから直接ストレージや外部APIを呼び出さず、データアクセスの境界を分けてください。
+TODOデータは MySQL に保存します。
+UIから直接DBやPrismaを呼び出さず、Server Actions と repository を境界にしてください。
 
-候補:
-
-- ローカル状態のみ: 小さな試作や一時的なUI検証向け
-- ブラウザストレージ: ローカル永続化が必要な場合
-- API / DB: 複数端末やユーザー間共有が必要な場合
-
-保存先を導入する場合は、テストで差し替えられるようにインターフェースを小さく保ってください。
+ローカル開発環境では Docker Compose の MySQL を使用します。
+テストでは Prisma delegate を差し替え、DB接続なしでデータアクセス層の単体テストを行います。
 
 ## 検証フロー
 
