@@ -2,10 +2,31 @@ import { describe, expect, it } from "vitest";
 
 import {
   DEFAULT_TODO_PRIORITY,
+  TODO_TITLE_MAX_LENGTH,
   TODO_PRIORITIES,
+  Todo,
   createTodo,
+  deleteTodo,
   parseTodoPriority,
+  toggleTodoCompleted,
 } from "./todo";
+
+const baseTodos: Todo[] = [
+  {
+    id: "todo-1",
+    title: "仕様を確認する",
+    completed: false,
+    priority: "medium",
+    createdAt: "2026-08-18T00:00:00.000Z",
+  },
+  {
+    id: "todo-2",
+    title: "レビューする",
+    completed: true,
+    priority: "high",
+    createdAt: "2026-08-18T01:00:00.000Z",
+  },
+];
 
 describe("createTodo", () => {
   it("新規TODOの優先度はデフォルトでmediumになる", () => {
@@ -81,10 +102,72 @@ describe("createTodo", () => {
       error: "TODOは100文字以内で入力してください。",
     });
   });
+
+  it("100文字ちょうどのTODOは作成できる", () => {
+    const title = "a".repeat(TODO_TITLE_MAX_LENGTH);
+
+    const result = createTodo({
+      id: "todo-1",
+      title,
+      createdAt: "2026-08-18T00:00:00.000Z",
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.todo.title).toBe(title);
+      expect(result.todo.completed).toBe(false);
+    }
+  });
 });
 
 describe("parseTodoPriority", () => {
+  it("low / medium / high はそのまま扱う", () => {
+    for (const priority of TODO_PRIORITIES) {
+      expect(parseTodoPriority(priority)).toBe(priority);
+    }
+  });
+
   it("low / medium / high 以外の値はmediumとして扱う", () => {
     expect(parseTodoPriority("urgent")).toBe(DEFAULT_TODO_PRIORITY);
+  });
+});
+
+describe("toggleTodoCompleted", () => {
+  it("指定したTODOの完了状態を切り替える", () => {
+    const result = toggleTodoCompleted(baseTodos, "todo-1");
+
+    expect(result).toEqual([
+      { ...baseTodos[0], completed: true },
+      baseTodos[1],
+    ]);
+  });
+
+  it("完了済みTODOを未完了に戻せる", () => {
+    const result = toggleTodoCompleted(baseTodos, "todo-2");
+
+    expect(result).toEqual([
+      baseTodos[0],
+      { ...baseTodos[1], completed: false },
+    ]);
+  });
+
+  it("該当するTODOがない場合は一覧を変更しない", () => {
+    const result = toggleTodoCompleted(baseTodos, "todo-unknown");
+
+    expect(result).toEqual(baseTodos);
+  });
+});
+
+describe("deleteTodo", () => {
+  it("指定したTODOを一覧から削除する", () => {
+    const result = deleteTodo(baseTodos, "todo-1");
+
+    expect(result).toEqual([baseTodos[1]]);
+  });
+
+  it("該当するTODOがない場合は一覧を変更しない", () => {
+    const result = deleteTodo(baseTodos, "todo-unknown");
+
+    expect(result).toEqual(baseTodos);
   });
 });
